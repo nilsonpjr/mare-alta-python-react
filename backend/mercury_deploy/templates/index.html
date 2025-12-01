@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercury Marine Consulta</title>
+</head>
+<body>
+    <h1>Pesquisar Preço</h1>
+    <form id="precoForm">
+        <label for="item">Item:</label>
+        <input type="text" id="item" name="item" required>
+        <button type="submit">Pesquisar</button>
+    </form>
+    <div id="precoResult"></div>
+
+    <h1>Consultar Garantia</h1>
+    <form id="garantiaForm">
+        <label for="nro_motor">Número do Motor:</label>
+        <input type="text" id="nro_motor" name="nro_motor" required>
+        <button type="submit">Consultar</button>
+    </form>
+    <div id="garantiaResult"></div>
+
+    <script>
+        document.getElementById("precoForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const item = document.getElementById("item").value;
+            const response = await fetch("/pesquisar_preco", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `item=${item}`,
+            });
+            const data = await response.json();
+            document.getElementById("precoResult").innerText = JSON.stringify(data, null, 2);
+        });
+
+        document.getElementById("garantiaForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const nro_motor = document.getElementById("nro_motor").value;
+            const response = await fetch("/consultar_garantia", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `nro_motor=${nro_motor}`,
+            });
+            const data = await response.json();
+            document.getElementById("garantiaResult").innerText = JSON.stringify(data, null, 2);
+        });
+    </script>
+</body>
+</html>
+

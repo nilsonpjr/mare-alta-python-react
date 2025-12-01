@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Copy of Copy of Mare Alta Náutica - ERP",
+  "description": "Sistema de gestão completo para autorizada Mercury Marine: O.S., Financeiro, Estoque e Portal de Frotas (Marinha).",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

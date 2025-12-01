@@ -1,0 +1,5 @@
+Flask[async]
+playwright
+beautifulsoup4
+gunicorn
+flask-cors
