@@ -1,0 +1,39 @@
+# Caching
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Editor-specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.vite/
+
+# Backend
+backend/.venv/
+backend/mare_alta.db
+backend/.env
+backend/mercury_deploy/.venv/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
