@@ -87,5 +87,5 @@ def search_product_requests(item: str):
         return []
 
 if __name__ == "__main__":
-    # Try a wildcard search or very common term
-    search_product_requests("%")
+    # Try a specific term to avoid SQL injection/syntax error
+    search_product_requests("filtro")
