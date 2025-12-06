@@ -34,4 +34,5 @@ COPY --from=frontend-build /app/frontend/dist /frontend/dist
 EXPOSE 8000
 
 # Comando de inicialização
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Usamos sh -c para expandir a variável de ambiente PORT fornecida pelo Render
+CMD sh -c "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
