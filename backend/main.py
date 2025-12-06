@@ -93,26 +93,34 @@ if os.path.exists(frontend_dist):
     print(f"DEBUG: frontend_dist found at {frontend_dist}")
     print(f"DEBUG: Listing frontend_dist: {os.listdir(frontend_dist)}")
     
-    # Monta a pasta 'assets' do frontend para servir arquivos estáticos como CSS, JS, imagens.
-    assets_path = os.path.join(frontend_dist, "assets")
-    if os.path.exists(assets_path):
-        print(f"DEBUG: Mounting assets from {assets_path}")
-        print(f"DEBUG: Assets content: {os.listdir(assets_path)}")
-        app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
-    else:
-        print(f"Aviso: Pasta de assets não encontrada em {assets_path}. O frontend pode não carregar corretamente.")
+    # Rota explícita para assets (JS/CSS) para garantir que sejam servidos corretamente
+    # Isso evita problemas com o StaticFiles ou precedência de rotas
+    @app.get("/assets/{filename}")
+    async def serve_assets(filename: str):
+        assets_path = os.path.join(frontend_dist, "assets")
+        file_path = os.path.join(assets_path, filename)
+        
+        print(f"DEBUG: Request for asset: {filename}")
+        if os.path.exists(file_path):
+            print(f"DEBUG: Serving asset from {file_path}")
+            return FileResponse(file_path)
+        
+        print(f"DEBUG: Asset not found: {file_path}")
+        return JSONResponse(status_code=404, content={"message": "Arquivo não encontrado"})
+
+    # Mantemos o mount como fallback ou para outros arquivos estáticos se houver
+    # app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
     # Rota curinga para servir o aplicativo SPA (Single Page Application) do frontend.
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
         # Permite que as chamadas de API do backend (e docs) passem sem serem interceptadas pelo SPA.
         # Se a rota começar com "api", "docs" ou for "openapi.json", retorna 404 (já que não é um arquivo estático).
-        # TAMBÉM ignoramos "assets" para evitar retornar index.html para JS/CSS não encontrados (causa erro de MIME type).
+        # Assets já são tratados pela rota acima, mas mantemos a verificação por segurança
         if full_path.startswith("api") or full_path.startswith("docs") or full_path == "openapi.json" or full_path.startswith("assets"):
             return JSONResponse(status_code=404, content={"message": "Não Encontrado"})
             
         # Para qualquer outra rota, tenta servir o 'index.html' do frontend.
-        # Isso é fundamental para roteamento de SPA, onde o frontend gerencia as rotas.
         index_path = os.path.join(frontend_dist, "index.html")
         if os.path.exists(index_path):
             return FileResponse(index_path)
