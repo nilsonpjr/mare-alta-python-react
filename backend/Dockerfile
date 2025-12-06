@@ -6,56 +6,28 @@ RUN npm install
 COPY frontend/ .
 RUN npm run build
 
-# Estágio 2: Backend com Playwright
-FROM python:3.9-slim
+# Estágio 2: Backend com Playwright (Imagem Oficial)
+# Usamos a imagem oficial que já contém Python e os navegadores instalados.
+FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
 
 WORKDIR /app
 
-# Instalar dependências do sistema para Playwright
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    libgconf-2-4 \
-    libgdk-pixbuf2.0-0 \
-    libgtk-3-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxcursor1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxi6 \
-    libxrandr2 \
-    libxrender1 \
-    libxss1 \
-    libxtst6 \
-    fonts-liberation \
-    libappindicator1 \
-    libasound2 \
+# A imagem oficial já tem as dependências de sistema necessárias.
+# Apenas instalamos curl/wget se necessário (geralmente já tem).
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements e instalar dependências Python
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Instalar browsers Playwright
-RUN playwright install chromium
-RUN playwright install-deps chromium
+# Browsers já estão instalados na imagem, não precisamos rodar playwright install
 
 # Copiar código do backend
 COPY backend/ .
 
 # Copiar o frontend buildado do estágio 1
-# O backend espera encontrar ../frontend/dist, então vamos replicar essa estrutura
-# Ou melhor, vamos colocar dentro de /app/frontend/dist e ajustar o main.py se necessário
-# Mas como o main.py faz os.path.join(os.path.dirname(...), "frontend", "dist"), ele sobe um nível.
-# Se backend está em /app, ele sobe para /, e procura /frontend/dist.
-# Então vamos copiar para /frontend/dist na raiz? Não, workdir é /app.
-# main.py está em /app/main.py. dirname é /app. dirname(dirname) é /.
-# Então ele procura /frontend/dist.
 COPY --from=frontend-build /app/frontend/dist /frontend/dist
 
 # Expor porta
