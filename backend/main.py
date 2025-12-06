@@ -87,6 +87,7 @@ if os.path.exists(frontend_dist):
     assets_path = os.path.join(frontend_dist, "assets")
     if os.path.exists(assets_path):
         print(f"DEBUG: Mounting assets from {assets_path}")
+        print(f"DEBUG: Assets content: {os.listdir(assets_path)}")
         app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
     else:
         print(f"Aviso: Pasta de assets não encontrada em {assets_path}. O frontend pode não carregar corretamente.")
@@ -96,7 +97,8 @@ if os.path.exists(frontend_dist):
     async def serve_spa(full_path: str):
         # Permite que as chamadas de API do backend (e docs) passem sem serem interceptadas pelo SPA.
         # Se a rota começar com "api", "docs" ou for "openapi.json", retorna 404 (já que não é um arquivo estático).
-        if full_path.startswith("api") or full_path.startswith("docs") or full_path == "openapi.json":
+        # TAMBÉM ignoramos "assets" para evitar retornar index.html para JS/CSS não encontrados (causa erro de MIME type).
+        if full_path.startswith("api") or full_path.startswith("docs") or full_path == "openapi.json" or full_path.startswith("assets"):
             return JSONResponse(status_code=404, content={"message": "Não Encontrado"})
             
         # Para qualquer outra rota, tenta servir o 'index.html' do frontend.
