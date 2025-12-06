@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: mare-alta
+    env: docker
+    region: oregon
+    plan: free
+    dockerContext: .
+    dockerfilePath: backend/Dockerfile
+    envVars:
+      - key: PORT
+        value: 10000
+    autoDeploy: true
