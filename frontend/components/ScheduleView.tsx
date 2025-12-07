@@ -159,10 +159,10 @@ const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ service, onCl
                         <h3 className="text-xl font-bold text-gray-900">{service.serviceName}</h3>
                         <div className="flex items-center gap-2 mt-2">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${service.status === Status.DONE
-                                    ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                                    : service.status === Status.IN_PROGRESS
-                                        ? 'bg-blue-100 text-blue-800 border-blue-200'
-                                        : 'bg-amber-100 text-amber-800 border-amber-200'
+                                ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                                : service.status === Status.IN_PROGRESS
+                                    ? 'bg-blue-100 text-blue-800 border-blue-200'
+                                    : 'bg-amber-100 text-amber-800 border-amber-200'
                                 }`}>
                                 {service.status}
                             </span>
@@ -221,7 +221,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ service, onCl
 
 // --- SCHEDULE VIEW (AGENDA) ---
 
-export default function ScheduleView() {
+export function ScheduleView() {
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState<ServiceOrder[]>([]);
     const [boats, setBoats] = useState<Boat[]>([]);
