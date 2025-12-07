@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { 
-    User, ServiceOrder, Part, StockMovement, Client, Boat, Marina, 
-    ServiceOrderCreate, ServiceItemCreate, OrderNoteCreate, ServiceOrderUpdate, 
-    PartCreate, PartUpdate, StockMovementCreate, 
-    TransactionCreate, Transaction, 
-    Manufacturer, Model, CompanyInfo, 
-    BoatCreate, BoatUpdate 
+import {
+    User, ServiceOrder, Part, StockMovement, Client, Boat, Marina,
+    ServiceOrderCreate, ServiceItemCreate, OrderNoteCreate, ServiceOrderUpdate,
+    PartCreate, PartUpdate, StockMovementCreate,
+    TransactionCreate, Transaction,
+    Manufacturer, Model, CompanyInfo,
+    BoatCreate, BoatUpdate
 } from '../types';
 
 /**
@@ -20,6 +20,7 @@ import {
 const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
 
 // Cria uma instância do Axios com a URL base e cabeçalhos padrão.
+console.log('API_URL:', API_URL); // Debug: Check which API URL is being used
 const api = axios.create({
     baseURL: API_URL,
     headers: {
@@ -346,7 +347,7 @@ export const ApiService = {
         // Nota: Atualmente, o backend não tem um endpoint /config/models direto.
         // A busca de modelos é feita através do getManufacturers.
         // Este é um placeholder para um endpoint futuro ou uma adaptação se necessário.
-        const response = await api.get<Model[]>('/config/models', { params }); 
+        const response = await api.get<Model[]>('/config/models', { params });
         return response.data;
     },
 
@@ -360,7 +361,7 @@ export const ApiService = {
         // É necessário adaptar esta chamada para passar o manufacturerId corretamente.
         // Por agora, assumindo que `model` já contém `manufacturerId` ou que a API irá inferir.
         // A chamada ideal seria: api.post(`/config/manufacturers/${model.manufacturerId}/models`, model);
-        const response = await api.post<Model>('/config/models', model); 
+        const response = await api.post<Model>('/config/models', model);
         return response.data;
     },
 
