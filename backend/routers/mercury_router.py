@@ -12,6 +12,8 @@ import requests # Biblioteca para fazer requisições HTTP.
 import asyncio # Para rodar funções síncronas em um threadpool.
 from bs4 import BeautifulSoup # Biblioteca para parsing de HTML (web scraping).
 import re # Módulo para expressões regulares.
+import auth
+import schemas
 
 # Adiciona o diretório pai (backend) ao sys.path para permitir importações relativas.
 # Isso é necessário para importar `services.fiscal_service` de `main.py`.
