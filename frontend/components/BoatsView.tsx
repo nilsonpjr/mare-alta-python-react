@@ -370,7 +370,7 @@ export const BoatsView: React.FC = () => {
                                                     <p className="font-mono text-xs text-slate-500">S/N: {eng.serialNumber} | {eng.hours} hrs</p>
                                                     <button
                                                         title="Verificar Garantia Mercury"
-                                                        onClick={() => window.open(`/api/mercury/serial/${eng.serialNumber}`, '_blank')}
+                                                        onClick={() => window.open(`/api/mercury/warranty/${eng.serialNumber}`, '_blank')}
                                                         className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100 hover:bg-blue-100 flex items-center gap-1"
                                                     >
                                                         <Search className="w-3 h-3" /> Check
