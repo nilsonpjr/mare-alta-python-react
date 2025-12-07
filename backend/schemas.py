@@ -457,7 +457,7 @@ class CompanyInfoBase(CamelModel):
     crt: Optional[str] = None # Código de Regime Tributário.
     environment: Optional[str] = None # Ambiente (production ou homologation)
     mercury_username: Optional[str] = None
-    mercury_password: Optional[str] = None.
+    mercury_password: Optional[str] = None
 
 class CompanyInfoCreate(CompanyInfoBase):
     """
