@@ -66,18 +66,24 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    print(f"DEBUG AUTH: Verifying token: {token[:10]}...")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
+        print(f"DEBUG AUTH: Payload decoded. Email: {email}")
         if email is None:
+            print("DEBUG AUTH: Email is None")
             raise credentials_exception
         token_data = schemas.TokenData(email=email)
-    except JWTError:
+    except JWTError as e:
+        print(f"DEBUG AUTH: JWTError: {str(e)}")
         raise credentials_exception
     
     user = db.query(models.User).filter(models.User.email == token_data.email).first()
     if user is None:
+        print(f"DEBUG AUTH: User not found for email {token_data.email}")
         raise credentials_exception
+    print("DEBUG AUTH: User authenticated successfully")
     return user
 
 def get_current_active_user(current_user: models.User = Depends(get_current_user)):
