@@ -15,12 +15,17 @@ Este documento serve como nosso **"Mapa de Controle"** para garantir que o Plano
 - [x] **PDF de Orçamento:** Gerar um PDF profissional com logo da oficina para enviar ao cliente.
 - [x] **Baixa de Estoque Real:** Conectar a criação da OS com a redução do `quantity` na tabela de peças (via `partId` matching).
 
-## 🏗 Fase 2: Estrutura SaaS & Backend (Alicerce)
+## 🏗 Fase 2: Estrutura SaaS & Backend (Alicerce) - EM ANDAMENTO
 *Objetivo: Preparar o sistema para ter múltiplos clientes (Multi-tenancy).*
 
-- [ ] **Migração Completa para Python/FastAPI:** Garantir que todo o frontend fale com a API Python.
-- [ ] **Login & Autenticação Real:** Implementar JWT e tabela de usuários no banco SQL.
-- [ ] **Suporte a Multi-Empresas:** Adicionar coluna `tenant_id` em todas as tabelas do banco de dados (Barcos, Clientes, Ordens).
+- [x] **Modelo de Tenant:** Criada tabela `tenants` e modelo SQLAlchemy
+- [x] **Adição de tenant_id:** TODAS as tabelas atualizadas com ForeignKey para `tenants`
+- [x] **Migração Completa do Banco:** Script `migrate_multi_tenancy.py` criado
+- [x] **Login & Autenticação Real:** JWT atualizado com `tenant_id` no payload e validação
+- [ ] **Middleware de Tenant:** Filtrar queries automaticamente baseado no tenant (próximo passo)
+- [ ] **Atualizar CRUDs:** Adicionar filtro de tenant_id em todos os endpoints
+
+---
 
 ## 🤝 Fase 3: Rede de Parceiros & Analista Técnico
 *Objetivo: Expandir para gerenciamento de grandes embarcações.*

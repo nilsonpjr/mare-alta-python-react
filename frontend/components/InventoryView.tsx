@@ -25,9 +25,13 @@ export const InventoryView: React.FC = () => {
     const [isPartModalOpen, setIsPartModalOpen] = useState(false);
     const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isBulkPriceModalOpen, setIsBulkPriceModalOpen] = useState(false);
 
     // Forms Data
     const [newPart, setNewPart] = useState<Partial<Part>>({});
+    const [editingPart, setEditingPart] = useState<Part | null>(null);
+    const [bulkMarkup, setBulkMarkup] = useState<number>(60); // Default 60%
 
     // Invoice Entry State
     const [invoiceForm, setInvoiceForm] = useState<Partial<Invoice>>({ items: [] });
@@ -328,6 +332,46 @@ export const InventoryView: React.FC = () => {
         }
     };
 
+    // --- EDIT PART ---
+    const handleEditPart = (part: Part) => {
+        setEditingPart({ ...part });
+        setIsEditModalOpen(true);
+    };
+
+    const handleSaveEditedPart = () => {
+        if (!editingPart) return;
+
+        // Auto-apply markup if cost and price are equal
+        let updatedPart = { ...editingPart };
+        if (updatedPart.cost === updatedPart.price && updatedPart.cost > 0) {
+            updatedPart.price = updatedPart.cost * 1.60; // 60% markup
+        }
+
+        const updatedParts = parts.map(p => p.id === updatedPart.id ? updatedPart : p);
+        setParts(updatedParts);
+        StorageService.saveInventory(updatedParts);
+        setIsEditModalOpen(false);
+        setEditingPart(null);
+        alert("Peça atualizada com sucesso!");
+    };
+
+    // --- BULK PRICE UPDATE ---
+    const handleBulkPriceUpdate = () => {
+        if (!window.confirm(`Aplicar ${bulkMarkup}% de margem sobre o custo em TODAS as peças do estoque?`)) {
+            return;
+        }
+
+        const updatedParts = parts.map(p => ({
+            ...p,
+            price: p.cost * (1 + bulkMarkup / 100)
+        }));
+
+        setParts(updatedParts);
+        StorageService.saveInventory(updatedParts);
+        setIsBulkPriceModalOpen(false);
+        alert(`Preços atualizados! ${bulkMarkup}% de margem aplicada em ${parts.length} itens.`);
+    };
+
     // --- SEARCH HELPERS ---
     const filteredParts = parts.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -367,6 +411,13 @@ export const InventoryView: React.FC = () => {
                         className="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm text-sm"
                     >
                         <RefreshCw className="w-4 h-4" /> Consulta Mercury
+                    </button>
+                    <button
+                        onClick={() => setIsBulkPriceModalOpen(true)}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm text-sm"
+                        title="Atualizar preços em massa"
+                    >
+                        <RefreshCw className="w-4 h-4" /> Atualizar Preços
                     </button>
                 </div>
             </div>
@@ -425,6 +476,7 @@ export const InventoryView: React.FC = () => {
                                         <th className="px-6 py-4 text-right">Custo Médio</th>
                                         <th className="px-6 py-4 text-right">Venda</th>
                                         <th className="px-6 py-4 text-center">Status</th>
+                                        <th className="px-6 py-4 text-center">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
@@ -449,6 +501,14 @@ export const InventoryView: React.FC = () => {
                                                         Normal
                                                     </span>
                                                 )}
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <button
+                                                    onClick={() => handleEditPart(part)}
+                                                    className="text-blue-600 hover:text-blue-800 font-medium text-xs"
+                                                >
+                                                    Editar
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}
@@ -935,6 +995,119 @@ export const InventoryView: React.FC = () => {
                     </div>
                 )
             }
-        </div >
+
+            {/* Edit Part Modal */}
+            {isEditModalOpen && editingPart && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl">
+                        <h3 className="text-lg font-bold mb-4">Editar Peça: {editingPart.name}</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="col-span-2">
+                                <label className="block text-xs font-medium text-slate-700 mb-1">Nome</label>
+                                <input
+                                    type="text"
+                                    className="w-full p-2 border rounded bg-white text-slate-900"
+                                    value={editingPart.name}
+                                    onChange={e => setEditingPart({ ...editingPart, name: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 mb-1">Custo (R$)</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    className="w-full p-2 border rounded bg-white text-slate-900"
+                                    value={editingPart.cost}
+                                    onChange={e => {
+                                        const newCost = parseFloat(e.target.value) || 0;
+                                        setEditingPart({ ...editingPart, cost: newCost });
+                                    }}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 mb-1">Preço Venda (R$)</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    className="w-full p-2 border rounded bg-white text-slate-900"
+                                    value={editingPart.price}
+                                    onChange={e => setEditingPart({ ...editingPart, price: parseFloat(e.target.value) || 0 })}
+                                />
+                            </div>
+                            <div className="col-span-2 bg-blue-50 p-3 rounded text-sm text-blue-800">
+                                <strong>💡 Dica:</strong> Se custo e preço forem iguais, será aplicado +60% automaticamente no preço.
+                                <div className="mt-1 text-xs">
+                                    Markup Atual: <strong>{editingPart.cost > 0 ? ((editingPart.price / editingPart.cost - 1) * 100).toFixed(0) : '0'}%</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="mt-6 flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setIsEditModalOpen(false);
+                                    setEditingPart(null);
+                                }}
+                                className="flex-1 px-4 py-2 border rounded hover:bg-slate-50 text-slate-900"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleSaveEditedPart}
+                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            >
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Bulk Price Update Modal */}
+            {isBulkPriceModalOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+                        <h3 className="text-lg font-bold mb-4 text-green-700">💰 Atualizar Preços em Massa</h3>
+                        <p className="text-sm text-slate-600 mb-4">
+                            Aplique uma margem de lucro sobre o custo de todas as peças do estoque de uma vez.
+                        </p>
+
+                        <div className="mb-4">
+                            <label className="block text-xs font-medium text-slate-700 mb-2">
+                                Margem de Lucro (%)
+                            </label>
+                            <input
+                                type="number"
+                                step="1"
+                                className="w-full p-3 border rounded bg-white text-slate-900 text-lg font-bold"
+                                value={bulkMarkup}
+                                onChange={e => setBulkMarkup(parseFloat(e.target.value) || 0)}
+                            />
+                            <p className="text-xs text-slate-500 mt-1">
+                                Exemplo: 60% significa que uma peça de custo R$ 100 será vendida por R$ 160
+                            </p>
+                        </div>
+
+                        <div className="bg-amber-50 border border-amber-200 p-3 rounded text-sm text-amber-900 mb-4">
+                            <strong>⚠️ Atenção:</strong> Esta ação irá modificar o preço de venda de <strong>{parts.length} peças</strong>.
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setIsBulkPriceModalOpen(false)}
+                                className="flex-1 px-4 py-2 border rounded hover:bg-slate-50 text-slate-900"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleBulkPriceUpdate}
+                                className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold"
+                            >
+                                Aplicar Margem
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 };

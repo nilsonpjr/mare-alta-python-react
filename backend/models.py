@@ -61,6 +61,20 @@ class MovementType(str, enum.Enum):
 # --- MODELS ---
 # Cada classe abaixo representa uma tabela no banco de dados.
 
+class Tenant(Base):
+    """
+    Modelo para a tabela 'tenants'. Suporte Multi-Tenancy (múltiplas empresas no mesmo sistema).
+    Cada tenant representa uma empresa/marina diferente com seus próprios dados isolados.
+    """
+    __tablename__ = "tenants"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), unique=True, nullable=False) # Nome da empresa/marina
+    cnpj = Column(String(50)) # CNPJ da empresa
+    subdomain = Column(String(100), unique=True) # Subdomínio único (ex: marealta.app.com)
+    is_active = Column(Boolean, default=True) # Se o tenant está ativo
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 class User(Base):
     """
     Modelo para a tabela 'users'. Armazena informações dos usuários do sistema.
@@ -68,8 +82,9 @@ class User(Base):
     __tablename__ = "users" # Nome da tabela no banco de dados
     
     id = Column(Integer, primary_key=True, index=True) # Chave primária auto-incrementável
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant (empresa)
     name = Column(String(200), nullable=False) # Nome completo do usuário
-    email = Column(String(200), unique=True, index=True, nullable=False) # Email único do usuário, usado para login
+    email = Column(String(200), index=True, nullable=False) # Email do usuário (único por tenant)
     hashed_password = Column(String(200), nullable=False) # Senha do usuário (hash)
     role = Column(Enum(UserRole), nullable=False) # Papel do usuário (ADMIN, TECHNICIAN, CLIENT)
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=True) # ID do cliente associado, se for um usuário cliente
@@ -84,6 +99,7 @@ class Client(Base):
     __tablename__ = "clients"
     
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
     name = Column(String(200), nullable=False) # Nome ou Razão Social do cliente
     document = Column(String(50), nullable=False) # CPF ou CNPJ do cliente
     phone = Column(String(50)) # Telefone de contato
@@ -103,6 +119,7 @@ class Marina(Base):
     __tablename__ = "marinas"
     
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
     name = Column(String(200), nullable=False) # Nome da marina
     address = Column(Text) # Endereço da marina
     contact_name = Column(String(200)) # Nome da pessoa de contato na marina
@@ -120,6 +137,7 @@ class Engine(Base):
     __tablename__ = "engines"
 
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
     boat_id = Column(Integer, ForeignKey("boats.id"), nullable=False) # ID da embarcação à qual o motor pertence
     serial_number = Column(String(100), nullable=False) # Número de série do motor
     motor_number = Column(String(100)) # Número do motor (geralmente diferente do serial)
@@ -141,6 +159,7 @@ class Boat(Base):
     __tablename__ = "boats"
     
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=False) # ID do cliente proprietário da embarcação
     marina_id = Column(Integer, ForeignKey("marinas.id"), nullable=True) # ID da marina onde a embarcação está (opcional)
     name = Column(String(200), nullable=False) # Nome da embarcação
@@ -164,7 +183,8 @@ class Part(Base):
     __tablename__ = "parts"
     
     id = Column(Integer, primary_key=True, index=True)
-    sku = Column(String(100), unique=True, index=True, nullable=False) # SKU (Stock Keeping Unit) - código único da peça
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
+    sku = Column(String(100), index=True, nullable=False) # SKU (único por tenant)
     barcode = Column(String(100), nullable=True) # Código de barras da peça (opcional)
     name = Column(String(200), nullable=False) # Nome/descrição da peça
     quantity = Column(Float, default=0) # Quantidade atual em estoque
@@ -185,6 +205,7 @@ class ServiceOrder(Base):
     __tablename__ = "service_orders"
     
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
     boat_id = Column(Integer, ForeignKey("boats.id"), nullable=False) # Embarcação relacionada à OS
     engine_id = Column(Integer, ForeignKey("engines.id"), nullable=True) # Motor relacionado à OS (opcional)
     description = Column(Text, nullable=False) # Descrição do serviço solicitado
@@ -247,7 +268,8 @@ class Invoice(Base):
     __tablename__ = "invoices"
     
     id = Column(Integer, primary_key=True, index=True)
-    number = Column(String(100), unique=True, nullable=False) # Número da nota fiscal, único
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
+    number = Column(String(100), nullable=False) # Número da nota fiscal (único por tenant)
     supplier = Column(String(200), nullable=False) # Fornecedor da nota
     date = Column(DateTime, nullable=False) # Data da emissão da nota
     total_value = Column(Float, default=0) # Valor total da nota
@@ -261,6 +283,7 @@ class StockMovement(Base):
     __tablename__ = "stock_movements"
     
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
     part_id = Column(Integer, ForeignKey("parts.id"), nullable=False) # ID da peça movimentada
     type = Column(Enum(MovementType), nullable=False) # Tipo de movimento (entrada, saída, ajuste)
     quantity = Column(Float, nullable=False) # Quantidade movimentada
@@ -279,6 +302,7 @@ class Transaction(Base):
     __tablename__ = "transactions"
     
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
     type = Column(String(50), nullable=False)  # Tipo de transação: INCOME (receita) ou EXPENSE (despesa)
     category = Column(String(100), nullable=False) # Categoria da transação (ex: "Combustível", "Salário", "Serviço")
     description = Column(Text, nullable=False) # Descrição detalhada da transação
@@ -295,7 +319,8 @@ class Manufacturer(Base):
     __tablename__ = "manufacturers"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(200), unique=True, nullable=False) # Nome único do fabricante
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True) # ID do tenant
+    name = Column(String(200), nullable=False) # Nome do fabricante (único por tenant)
     type = Column(String(50), nullable=False) # Tipo de fabricante: BOAT (embarcação) ou ENGINE (motor)
     
     # Relacionamento com Model. Um fabricante pode ter múltiplos modelos.

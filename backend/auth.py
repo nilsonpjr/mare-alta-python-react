@@ -35,12 +35,12 @@ def get_password_hash(password: str) -> str:
 # --- TOKEN MANAGEMENT ---
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    """Cria token JWT"""
+    """Cria token JWT com tenant_id"""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -48,7 +48,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 # --- AUTHENTICATION ---
 
 def authenticate_user(db: Session, email: str, password: str):
-    """Autentica usuário"""
+    """Autentica usuário e retorna com tenant_id"""
     user = db.query(models.User).filter(models.User.email == email).first()
     if not user:
         return False
@@ -60,7 +60,7 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
-    """Obtém usuário atual a partir do token"""
+    """Obtém usuário atual a partir do token (com validação de tenant)"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -70,20 +70,29 @@ def get_current_user(
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
-        print(f"DEBUG AUTH: Payload decoded. Email: {email}")
-        if email is None:
-            print("DEBUG AUTH: Email is None")
+        tenant_id: int = payload.get("tenant_id")  # NOVO: Extrair tenant_id
+        print(f"DEBUG AUTH: Payload decoded. Email: {email}, Tenant: {tenant_id}")
+        if email is None or tenant_id is None:
+            print("DEBUG AUTH: Email or tenant_id is None")
             raise credentials_exception
         token_data = schemas.TokenData(email=email)
     except JWTError as e:
         print(f"DEBUG AUTH: JWTError: {str(e)}")
         raise credentials_exception
     
-    user = db.query(models.User).filter(models.User.email == token_data.email).first()
+    # NOVO: Validar que o usuário pertence ao tenant do token
+    user = db.query(models.User).filter(
+        models.User.email == token_data.email,
+        models.User.tenant_id == tenant_id
+    ).first()
+    
     if user is None:
-        print(f"DEBUG AUTH: User not found for email {token_data.email}")
+        print(f"DEBUG AUTH: User not found for email {token_data.email} and tenant {tenant_id}")
         raise credentials_exception
+    
     print("DEBUG AUTH: User authenticated successfully")
+    # Armazenar tenant_id no objeto user para fácil acesso
+    user.current_tenant_id = tenant_id
     return user
 
 def get_current_active_user(current_user: models.User = Depends(get_current_user)):

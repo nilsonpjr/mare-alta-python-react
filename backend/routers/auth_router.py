@@ -37,9 +37,13 @@ def login(
     
     # Define a expiração do token de acesso.
     access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
-    # Cria o token de acesso.
+    # Cria o token de acesso com tenant_id
     access_token = auth.create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={
+            "sub": user.email,
+            "tenant_id": user.tenant_id  # NOVO: Incluir tenant_id no token
+        }, 
+        expires_delta=access_token_expires
     )
     
     # Retorna o token de acesso e o tipo do token.

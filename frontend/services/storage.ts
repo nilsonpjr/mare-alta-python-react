@@ -81,15 +81,47 @@ const seedBoats: Boat[] = [
 ];
 
 const seedParts: Part[] = [
-  { id: 'p1', sku: '8M0154789', barcode: '789111222333', name: 'Óleo 25W-40 Synthetic', quantity: 150, cost: 45.00, price: 85.00, minStock: 20, location: 'A1-01' },
-  { id: 'p2', sku: '35-8M0065104', barcode: '789444555666', name: 'Filtro de Óleo Verado', quantity: 5, cost: 60.00, price: 120.00, minStock: 10, location: 'A1-02' },
-  { id: 'p3', sku: '47-43026T2', barcode: '789777888999', name: 'Rotor da Bomba D\'água', quantity: 8, cost: 90.00, price: 180.00, minStock: 5, location: 'B2-10' },
-  { id: 'p4', sku: '8M0059687', barcode: '789000111222', name: 'Filtro de Combustível', quantity: 12, cost: 55.00, price: 110.00, minStock: 10, location: 'A2-05' },
-  { id: 'p5', sku: 'NGK-IZFR5G', barcode: '789333444555', name: 'Vela de Ignição Iridium', quantity: 24, cost: 80.00, price: 150.00, minStock: 20, location: 'C1-15' },
-  { id: 'p6', sku: '92-858064K01', barcode: '789666777888', name: 'Óleo de Rabeta High Perf.', quantity: 4, cost: 50.00, price: 95.00, minStock: 10, location: 'A1-03' },
-  { id: 'p7', sku: 'ANODO-KIT-V6', barcode: '789999000111', name: 'Kit Anodos Alumínio V6', quantity: 10, cost: 150.00, price: 320.00, minStock: 5, location: 'D4-01' },
-  { id: 'p8', sku: 'CORREIA-ALT', barcode: '789222333444', name: 'Correia do Alternador', quantity: 2, cost: 80.00, price: 190.00, minStock: 3, location: 'E2-02' },
-  { id: 'p9', sku: 'ROTOR-BOMBA', barcode: '789555666777', name: 'Reparo Bomba Combustível', quantity: 1, cost: 200.00, price: 450.00, minStock: 2, location: 'F1-05' }
+  // MERCURY VERADO V8 & DIESEL
+  { id: 'p1', sku: '8M0123456', barcode: '', name: 'Filtro de Óleo Mercury Verado/Diesel', quantity: 10, cost: 78.00, price: 120.00, minStock: 3, location: 'A1-MERCURY' },
+  { id: 'p2', sku: '92-858037K01', barcode: '', name: 'Óleo Motor 25W40 (Quart) / TCW3 OptiMax', quantity: 50, cost: 55.25, price: 85.00, minStock: 20, location: 'A1-MERCURY' },
+  { id: 'p3', sku: '8M0000001', barcode: '', name: 'Filtro de Combustível Baixa Pressão', quantity: 8, cost: 97.50, price: 150.00, minStock: 5, location: 'A1-MERCURY' },
+  { id: 'p4', sku: '8M0000002', barcode: '', name: 'Kit Anodos Rabeta Verado', quantity: 5, cost: 292.50, price: 450.00, minStock: 3, location: 'D4-ANODOS' },
+  { id: 'p5', sku: '92-858064K01', barcode: '', name: 'Óleo de Rabeta High Performance', quantity: 30, cost: 71.50, price: 110.00, minStock: 10, location: 'A1-MERCURY' },
+  { id: 'p6', sku: '8M0000123', barcode: '', name: 'Velas de Ignição Iridium V8', quantity: 24, cost: 117.00, price: 180.00, minStock: 8, location: 'C1-VELAS' },
+  { id: 'p7', sku: '8M0000456', barcode: '', name: 'Kit Reparo Bomba D\'água Verado', quantity: 4, cost: 247.00, price: 380.00, minStock: 2, location: 'B2-KITS' },
+  { id: 'p8', sku: '8M0000789', barcode: '', name: 'Correia do Alternador Verado', quantity: 3, cost: 273.00, price: 420.00, minStock: 2, location: 'E2-CORREIAS' },
+
+  // MERCURY PORTÁTEIS (3.5-9.9 HP)
+  { id: 'p10', sku: '8M0071840', barcode: '', name: 'Óleo Motor 10W-30 (Quart)', quantity: 20, cost: 42.25, price: 65.00, minStock: 8, location: 'A1-MERCURY' },
+  { id: 'p11', sku: '8M0065104', barcode: '', name: 'Filtro de Óleo Pequeno/SeaPro', quantity: 15, cost: 55.25, price: 85.00, minStock: 8, location: 'A1-MERCURY' },
+  { id: 'p12', sku: '35-879885T', barcode: '', name: 'Vela de Ignição NGK', quantity: 20, cost: 29.25, price: 45.00, minStock: 10, location: 'C1-VELAS' },
+  { id: 'p13', sku: '8M0100633', barcode: '', name: 'Óleo de Rabeta SAE 90', quantity: 12, cost: 55.25, price: 85.00, minStock: 6, location: 'A1-MERCURY' },
+
+  // MERCRUISER (4.5L & 6.2L)
+  { id: 'p20', sku: '8M0078630', barcode: '', name: 'Óleo Motor 25W-40 (Quart)', quantity: 80, cost: 52.00, price: 80.00, minStock: 30, location: 'A1-MERCURY' },
+  { id: 'p21', sku: '35-866340Q03', barcode: '', name: 'Filtro de Óleo MerCruiser', quantity: 12, cost: 71.50, price: 110.00, minStock: 6, location: 'A1-MERCURY' },
+  { id: 'p22', sku: '35-60494A1', barcode: '', name: 'Filtro de Combustível MerCruiser', quantity: 10, cost: 84.50, price: 130.00, minStock: 5, location: 'A1-MERCURY' },
+  { id: 'p23', sku: '8M0105237', barcode: '', name: 'Velas de Ignição NGK/IGX (Jogo)', quantity: 15, cost: 61.75, price: 95.00, minStock: 6, location: 'C1-VELAS' },
+  { id: 'p24', sku: '8M0100526', barcode: '', name: 'Kit Reparo Bomba D\'água', quantity: 6, cost: 208.00, price: 320.00, minStock: 3, location: 'B2-KITS' },
+  { id: 'p25', sku: '8M0100456', barcode: '', name: 'Correia do Alternador', quantity: 5, cost: 273.00, price: 420.00, minStock: 3, location: 'E2-CORREIAS' },
+
+  // MERCURY DIESEL (3.0L)
+  { id: 'p30', sku: '35-8M0065104', barcode: '', name: 'Filtro de Óleo Diesel', quantity: 8, cost: 91.00, price: 140.00, minStock: 4, location: 'A1-MERCURY' },
+  { id: 'p31', sku: '8M0059687', barcode: '', name: 'Filtro de Combustível Primário/OptiMax', quantity: 12, cost: 117.00, price: 180.00, minStock: 6, location: 'A1-MERCURY' },
+  { id: 'p32', sku: '8M0059688', barcode: '', name: 'Filtro de Combustível Secundário', quantity: 10, cost: 117.00, price: 180.00, minStock: 5, location: 'A1-MERCURY' },
+  { id: 'p33', sku: '8M0100789', barcode: '', name: 'Kit Reparo Bomba D\'água Diesel/OptiMax', quantity: 4, cost: 338.00, price: 520.00, minStock: 2, location: 'B2-KITS' },
+  { id: 'p34', sku: '8M0100790', barcode: '', name: 'Correia Poly-V', quantity: 4, cost: 247.00, price: 380.00, minStock: 2, location: 'E2-CORREIAS' },
+
+  // SEAPRO & OPTIMAX
+  { id: 'p40', sku: 'NGK-IZFR5G', barcode: '', name: 'Velas de Ignição Iridium', quantity: 18, cost: 97.50, price: 150.00, minStock: 12, location: 'C1-VELAS' },
+  { id: 'p41', sku: 'ANODO-KIT-V6', barcode: '', name: 'Kit Anodos Comercial/V6', quantity: 8, cost: 227.50, price: 350.00, minStock: 4, location: 'D4-ANODOS' },
+  { id: 'p42', sku: '35-879984T', barcode: '', name: 'Vela de Ignição OptiMax', quantity: 15, cost: 78.00, price: 120.00, minStock: 12, location: 'C1-VELAS' },
+
+  // YAMAHA F300
+  { id: 'p50', sku: '69J-13440-03', barcode: '', name: 'Filtro de Óleo Yamaha', quantity: 10, cost: 91.00, price: 140.00, minStock: 5, location: 'A2-YAMAHA' },
+  { id: 'p51', sku: 'YAM-LUBE-4M', barcode: '', name: 'Yamalube 4M 10W-30', quantity: 40, cost: 58.50, price: 90.00, minStock: 20, location: 'A2-YAMAHA' },
+  { id: 'p52', sku: '6P2-WS24A-01', barcode: '', name: 'Elemento Filtro Combustível Yamaha', quantity: 8, cost: 117.00, price: 180.00, minStock: 4, location: 'A2-YAMAHA' },
+  { id: 'p53', sku: '90430-08003', barcode: '', name: 'Gaxeta Dreno Óleo Yamaha', quantity: 25, cost: 9.75, price: 15.00, minStock: 10, location: 'A2-YAMAHA' },
 ];
 
 const ORDER_DESCRIPTIONS = [
@@ -127,32 +159,32 @@ for (let i = 0; i < 100; i++) {
   const boat = getRandomItem(seedBoats);
   const date = getDate(dayOffset, getRandomInt(8, 17));
   const desc = getRandomItem(ORDER_DESCRIPTIONS);
-  
+
   // Generate random items for value
   const items: ServiceItem[] = [];
   let totalValue = 0;
   if (status !== OSStatus.PENDING && status !== OSStatus.CANCELED) {
-      const laborCost = getRandomInt(200, 1500);
-      items.push({ id: `i_l_${i}`, type: 'LABOR', description: 'Mão de Obra Especializada', quantity: 1, unitPrice: laborCost, total: laborCost });
-      
-      const part = getRandomItem(seedParts);
-      const qty = getRandomInt(1, 4);
-      items.push({ 
-          id: `i_p_${i}`, 
-          type: 'PART', 
-          description: part.name, 
-          partId: part.id,
-          quantity: qty, 
-          unitPrice: part.price, 
-          unitCost: part.cost,
-          total: part.price * qty 
-      });
-      
-      totalValue = laborCost + (part.price * qty);
+    const laborCost = getRandomInt(200, 1500);
+    items.push({ id: `i_l_${i}`, type: 'LABOR', description: 'Mão de Obra Especializada', quantity: 1, unitPrice: laborCost, total: laborCost });
+
+    const part = getRandomItem(seedParts);
+    const qty = getRandomInt(1, 4);
+    items.push({
+      id: `i_p_${i}`,
+      type: 'PART',
+      description: part.name,
+      partId: part.id,
+      quantity: qty,
+      unitPrice: part.price,
+      unitCost: part.cost,
+      total: part.price * qty
+    });
+
+    totalValue = laborCost + (part.price * qty);
   }
 
   const orderId = `OS-2024-${(100 + i).toString()}`;
-  
+
   generatedOrders.push({
     id: orderId,
     boatId: boat.id,
@@ -173,35 +205,35 @@ for (let i = 0; i < 100; i++) {
 
   // Generate Transaction for Completed Orders
   if (status === OSStatus.COMPLETED) {
-      generatedTransactions.push({
-          id: `t_inc_${i}`,
-          type: 'INCOME',
-          category: 'Serviços',
-          description: `Receita OS #${orderId} - ${boat.name}`,
-          amount: totalValue,
-          date: date,
-          status: 'PAID',
-          orderId: orderId,
-          documentNumber: `NFS-${1000+i}`
-      });
+    generatedTransactions.push({
+      id: `t_inc_${i}`,
+      type: 'INCOME',
+      category: 'Serviços',
+      description: `Receita OS #${orderId} - ${boat.name}`,
+      amount: totalValue,
+      date: date,
+      status: 'PAID',
+      orderId: orderId,
+      documentNumber: `NFS-${1000 + i}`
+    });
   }
 }
 
 // Generate Random Expenses
 for (let i = 0; i < 30; i++) {
-    const dayOffset = getRandomInt(-90, 0);
-    const amount = getRandomInt(100, 2000);
-    const category = getRandomItem(['Combustível', 'Alimentação', 'Peças (Compra)', 'Energia', 'Aluguel', 'Ferramentas']);
-    
-    generatedTransactions.push({
-        id: `t_exp_${i}`,
-        type: 'EXPENSE',
-        category: category,
-        description: `${category} - Lançamento Diverso`,
-        amount: amount,
-        date: getDate(dayOffset),
-        status: 'PAID'
-    });
+  const dayOffset = getRandomInt(-90, 0);
+  const amount = getRandomInt(100, 2000);
+  const category = getRandomItem(['Combustível', 'Alimentação', 'Peças (Compra)', 'Energia', 'Aluguel', 'Ferramentas']);
+
+  generatedTransactions.push({
+    id: `t_exp_${i}`,
+    type: 'EXPENSE',
+    category: category,
+    description: `${category} - Lançamento Diverso`,
+    amount: amount,
+    date: getDate(dayOffset),
+    status: 'PAID'
+  });
 }
 
 // Ensure essential pending expenses exist
@@ -236,10 +268,10 @@ const seedConfig: SystemConfig = {
 
 // Helper to deep copy defaults if not found in storage
 const getOrSeed = <T>(key: string, seed: T): T => {
-    const data = localStorage.getItem(key);
-    if (data) return JSON.parse(data);
-    // Important: Return a deep copy of the seed to prevent reference issues
-    return JSON.parse(JSON.stringify(seed));
+  const data = localStorage.getItem(key);
+  if (data) return JSON.parse(data);
+  // Important: Return a deep copy of the seed to prevent reference issues
+  return JSON.parse(JSON.stringify(seed));
 };
 
 export const StorageService = {
@@ -262,208 +294,208 @@ export const StorageService = {
   saveMovements: (movements: StockMovement[]) => localStorage.setItem(KEYS.MOVEMENTS, JSON.stringify(movements)),
 
   addMovement: (movement: StockMovement) => {
-      const movements = StorageService.getMovements();
-      movements.push(movement);
-      localStorage.setItem(KEYS.MOVEMENTS, JSON.stringify(movements));
+    const movements = StorageService.getMovements();
+    movements.push(movement);
+    localStorage.setItem(KEYS.MOVEMENTS, JSON.stringify(movements));
   },
 
   // Process a new Invoice (Updates stock and adds movement)
   processInvoice: (invoice: Invoice, user: string) => {
-      const parts = StorageService.getInventory();
-      const invoices = StorageService.getInvoices();
-      const movements = StorageService.getMovements();
-      const transactions = StorageService.getTransactions();
+    const parts = StorageService.getInventory();
+    const invoices = StorageService.getInvoices();
+    const movements = StorageService.getMovements();
+    const transactions = StorageService.getTransactions();
 
-      // 1. Update Inventory and Create Movements
-      invoice.items.forEach(item => {
-          if (!item.partId) return;
-          
-          const partIndex = parts.findIndex(p => p.id === item.partId);
-          if (partIndex >= 0) {
-              const part = parts[partIndex];
-              // Update Quantity
-              const oldQty = part.quantity;
-              part.quantity += item.quantity;
-              
-              // Update Cost (Weighted Average)
-              // (Old Cost * Old Qty + New Cost * New Qty) / Total Qty
-              const totalValue = (part.cost * oldQty) + (item.unitCost * item.quantity);
-              part.cost = totalValue / part.quantity;
-              
-              // Add Movement Log
-              movements.push({
-                  id: Date.now().toString() + Math.random(),
-                  partId: part.id,
-                  type: 'IN_INVOICE',
-                  quantity: item.quantity,
-                  date: new Date().toISOString(),
-                  referenceId: invoice.id,
-                  description: `Entrada via NF ${invoice.number} - ${invoice.supplier}`,
-                  user: user
-              });
-          }
-      });
+    // 1. Update Inventory and Create Movements
+    invoice.items.forEach(item => {
+      if (!item.partId) return;
 
-      // 2. Add Invoice to History
-      invoices.push(invoice);
-      
-      // 3. Create Expense Transaction
-      transactions.push({
-          id: Date.now().toString(),
-          type: 'EXPENSE',
-          category: 'Peças (Compra)',
-          description: `Compra NF ${invoice.number} - ${invoice.supplier}`,
-          amount: invoice.totalValue,
-          date: invoice.date,
-          status: 'PAID', // Assuming paid for simplicity, could be PENDING
-          documentNumber: invoice.number
-      });
+      const partIndex = parts.findIndex(p => p.id === item.partId);
+      if (partIndex >= 0) {
+        const part = parts[partIndex];
+        // Update Quantity
+        const oldQty = part.quantity;
+        part.quantity += item.quantity;
 
-      // Save All
-      localStorage.setItem(KEYS.INVENTORY, JSON.stringify(parts));
-      localStorage.setItem(KEYS.INVOICES, JSON.stringify(invoices));
-      localStorage.setItem(KEYS.MOVEMENTS, JSON.stringify(movements));
-      localStorage.setItem(KEYS.FINANCE, JSON.stringify(transactions));
+        // Update Cost (Weighted Average)
+        // (Old Cost * Old Qty + New Cost * New Qty) / Total Qty
+        const totalValue = (part.cost * oldQty) + (item.unitCost * item.quantity);
+        part.cost = totalValue / part.quantity;
+
+        // Add Movement Log
+        movements.push({
+          id: Date.now().toString() + Math.random(),
+          partId: part.id,
+          type: 'IN_INVOICE',
+          quantity: item.quantity,
+          date: new Date().toISOString(),
+          referenceId: invoice.id,
+          description: `Entrada via NF ${invoice.number} - ${invoice.supplier}`,
+          user: user
+        });
+      }
+    });
+
+    // 2. Add Invoice to History
+    invoices.push(invoice);
+
+    // 3. Create Expense Transaction
+    transactions.push({
+      id: Date.now().toString(),
+      type: 'EXPENSE',
+      category: 'Peças (Compra)',
+      description: `Compra NF ${invoice.number} - ${invoice.supplier}`,
+      amount: invoice.totalValue,
+      date: invoice.date,
+      status: 'PAID', // Assuming paid for simplicity, could be PENDING
+      documentNumber: invoice.number
+    });
+
+    // Save All
+    localStorage.setItem(KEYS.INVENTORY, JSON.stringify(parts));
+    localStorage.setItem(KEYS.INVOICES, JSON.stringify(invoices));
+    localStorage.setItem(KEYS.MOVEMENTS, JSON.stringify(movements));
+    localStorage.setItem(KEYS.FINANCE, JSON.stringify(transactions));
   },
 
   getOrders: (): ServiceOrder[] => getOrSeed(KEYS.ORDERS, generatedOrders),
   saveOrders: (orders: ServiceOrder[]) => localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders)),
-  
+
   // -- ADVANCED ORDER MANAGEMENT --
-  
+
   completeServiceOrder: (orderId: string): boolean => {
-      console.log("Tentando concluir ordem: ", orderId);
-      try {
-        const orders = StorageService.getOrders();
-        const orderIndex = orders.findIndex(o => o.id === orderId);
-        
-        if(orderIndex < 0) {
-            console.error("Ordem não encontrada: " + orderId);
-            return false;
-        }
-        
-        const order = orders[orderIndex];
-        
-        // Prevent double completion
-        if (order.status === OSStatus.COMPLETED) {
-             console.log("Ordem já estava concluída.");
-             return true;
-        }
-
-        const parts = StorageService.getInventory();
-        const movements = StorageService.getMovements();
-        const transactions = StorageService.getTransactions();
-        const boats = StorageService.getBoats();
-        const boat = boats.find(b => b.id === order.boatId);
-
-        // 1. Deduct Stock for Used Parts
-        if (order.items && order.items.length > 0) {
-            order.items.forEach(item => {
-                if (item.type === 'PART' && item.partId) {
-                    const partIndex = parts.findIndex(p => p.id === item.partId);
-                    if (partIndex >= 0) {
-                        console.log(`Baixando estoque: Peça ${parts[partIndex].name}, Qtd ${item.quantity}`);
-                        parts[partIndex].quantity -= item.quantity;
-                        movements.push({
-                            id: Date.now().toString() + Math.random(),
-                            partId: item.partId,
-                            type: 'OUT_OS',
-                            quantity: item.quantity,
-                            date: new Date().toISOString(),
-                            referenceId: order.id,
-                            description: `Saída OS #${order.id} - ${item.description}`,
-                            user: 'Sistema'
-                        });
-                    } else {
-                        console.warn(`Peça ID ${item.partId} não encontrada no inventário.`);
-                    }
-                }
-            });
-        }
-
-        // 2. Generate Income Transaction
-        const exists = transactions.some(t => t.orderId === order.id && t.status !== 'CANCELED');
-        if (!exists) {
-            transactions.push({
-                id: Date.now().toString(),
-                type: 'INCOME',
-                category: 'Serviços',
-                description: `Receita OS #${order.id} - ${boat?.name || 'Embarcação'}`,
-                amount: order.totalValue,
-                date: new Date().toISOString(),
-                status: 'PAID',
-                orderId: order.id,
-                documentNumber: `NFS-${order.id}`
-            });
-        }
-
-        // 3. Update Order Status
-        order.status = OSStatus.COMPLETED;
-        orders[orderIndex] = order;
-
-        // Save Everything Explicitly
-        StorageService.saveInventory(parts);
-        StorageService.saveMovements(movements);
-        StorageService.saveTransactions(transactions);
-        StorageService.saveOrders(orders);
-        
-        console.log("Ordem concluída e salva com sucesso.");
-        return true;
-      } catch (e) {
-        console.error("Erro ao concluir ordem (Exception):", e);
-        return false;
-      }
-  },
-
-  reopenServiceOrder: (orderId: string): boolean => {
+    console.log("Tentando concluir ordem: ", orderId);
+    try {
       const orders = StorageService.getOrders();
       const orderIndex = orders.findIndex(o => o.id === orderId);
-      if(orderIndex < 0) return false;
+
+      if (orderIndex < 0) {
+        console.error("Ordem não encontrada: " + orderId);
+        return false;
+      }
 
       const order = orders[orderIndex];
-      // Only can reopen Completed orders
-      if (order.status !== OSStatus.COMPLETED) return false;
+
+      // Prevent double completion
+      if (order.status === OSStatus.COMPLETED) {
+        console.log("Ordem já estava concluída.");
+        return true;
+      }
 
       const parts = StorageService.getInventory();
       const movements = StorageService.getMovements();
       const transactions = StorageService.getTransactions();
+      const boats = StorageService.getBoats();
+      const boat = boats.find(b => b.id === order.boatId);
 
-      // 1. Return Stock (Reverse Deduction)
-      order.items.forEach(item => {
+      // 1. Deduct Stock for Used Parts
+      if (order.items && order.items.length > 0) {
+        order.items.forEach(item => {
           if (item.type === 'PART' && item.partId) {
-              const partIndex = parts.findIndex(p => p.id === item.partId);
-              if (partIndex >= 0) {
-                  parts[partIndex].quantity += item.quantity;
-                  movements.push({
-                      id: Date.now().toString() + Math.random(),
-                      partId: item.partId,
-                      type: 'RETURN_OS', // New Type or use ADJUSTMENT_PLUS
-                      quantity: item.quantity,
-                      date: new Date().toISOString(),
-                      referenceId: order.id,
-                      description: `Estorno (Reabertura) OS #${order.id} - ${item.description}`,
-                      user: 'Admin'
-                  });
-              }
+            const partIndex = parts.findIndex(p => p.id === item.partId);
+            if (partIndex >= 0) {
+              console.log(`Baixando estoque: Peça ${parts[partIndex].name}, Qtd ${item.quantity}`);
+              parts[partIndex].quantity -= item.quantity;
+              movements.push({
+                id: Date.now().toString() + Math.random(),
+                partId: item.partId,
+                type: 'OUT_OS',
+                quantity: item.quantity,
+                date: new Date().toISOString(),
+                referenceId: order.id,
+                description: `Saída OS #${order.id} - ${item.description}`,
+                user: 'Sistema'
+              });
+            } else {
+              console.warn(`Peça ID ${item.partId} não encontrada no inventário.`);
+            }
           }
-      });
+        });
+      }
 
-      // 2. Cancel Financial Transaction
-      const transIndex = transactions.findIndex(t => t.orderId === order.id && t.status === 'PAID');
-      if (transIndex >= 0) {
-          transactions[transIndex].status = 'CANCELED';
-          transactions[transIndex].description += ' (ESTORNADO)';
+      // 2. Generate Income Transaction
+      const exists = transactions.some(t => t.orderId === order.id && t.status !== 'CANCELED');
+      if (!exists) {
+        transactions.push({
+          id: Date.now().toString(),
+          type: 'INCOME',
+          category: 'Serviços',
+          description: `Receita OS #${order.id} - ${boat?.name || 'Embarcação'}`,
+          amount: order.totalValue,
+          date: new Date().toISOString(),
+          status: 'PAID',
+          orderId: order.id,
+          documentNumber: `NFS-${order.id}`
+        });
       }
 
       // 3. Update Order Status
-      order.status = OSStatus.IN_PROGRESS;
+      order.status = OSStatus.COMPLETED;
       orders[orderIndex] = order;
 
+      // Save Everything Explicitly
       StorageService.saveInventory(parts);
       StorageService.saveMovements(movements);
       StorageService.saveTransactions(transactions);
       StorageService.saveOrders(orders);
+
+      console.log("Ordem concluída e salva com sucesso.");
       return true;
+    } catch (e) {
+      console.error("Erro ao concluir ordem (Exception):", e);
+      return false;
+    }
+  },
+
+  reopenServiceOrder: (orderId: string): boolean => {
+    const orders = StorageService.getOrders();
+    const orderIndex = orders.findIndex(o => o.id === orderId);
+    if (orderIndex < 0) return false;
+
+    const order = orders[orderIndex];
+    // Only can reopen Completed orders
+    if (order.status !== OSStatus.COMPLETED) return false;
+
+    const parts = StorageService.getInventory();
+    const movements = StorageService.getMovements();
+    const transactions = StorageService.getTransactions();
+
+    // 1. Return Stock (Reverse Deduction)
+    order.items.forEach(item => {
+      if (item.type === 'PART' && item.partId) {
+        const partIndex = parts.findIndex(p => p.id === item.partId);
+        if (partIndex >= 0) {
+          parts[partIndex].quantity += item.quantity;
+          movements.push({
+            id: Date.now().toString() + Math.random(),
+            partId: item.partId,
+            type: 'RETURN_OS', // New Type or use ADJUSTMENT_PLUS
+            quantity: item.quantity,
+            date: new Date().toISOString(),
+            referenceId: order.id,
+            description: `Estorno (Reabertura) OS #${order.id} - ${item.description}`,
+            user: 'Admin'
+          });
+        }
+      }
+    });
+
+    // 2. Cancel Financial Transaction
+    const transIndex = transactions.findIndex(t => t.orderId === order.id && t.status === 'PAID');
+    if (transIndex >= 0) {
+      transactions[transIndex].status = 'CANCELED';
+      transactions[transIndex].description += ' (ESTORNADO)';
+    }
+
+    // 3. Update Order Status
+    order.status = OSStatus.IN_PROGRESS;
+    orders[orderIndex] = order;
+
+    StorageService.saveInventory(parts);
+    StorageService.saveMovements(movements);
+    StorageService.saveTransactions(transactions);
+    StorageService.saveOrders(orders);
+    return true;
   },
 
   getTransactions: (): Transaction[] => getOrSeed(KEYS.FINANCE, generatedTransactions),
@@ -480,8 +512,8 @@ export const StorageService = {
   saveServices: (services: ServiceDefinition[]) => localStorage.setItem(KEYS.SERVICES, JSON.stringify(services)),
 
   login: (email: string, pass: string): User | null => {
-      const users = StorageService.getUsers();
-      return users.find(u => u.email === email && u.password === pass) || null;
+    const users = StorageService.getUsers();
+    return users.find(u => u.email === email && u.password === pass) || null;
   },
 
   reset: () => {
