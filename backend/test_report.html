@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Testes - Mare Alta Backend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+           transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .success { color: #10b981; }
+        .warning { color: #f59e0b; }
+        .info { color: #3b82f6; }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-size: 1.8em;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .test-module {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .test-module:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .test-module h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .test-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .passed { background: #10b981; }
+        .failed { background: #ef4444; }
+        .skipped { background: #f59e0b; }
+        
+        .test-name {
+            font-size: 0.9em;
+            color: #374151;
+        }
+        
+        .progress-bar {
+            background: #e5e7eb;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+        
+        .coverage-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .coverage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .coverage-bar {
+            width: 200px;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .coverage-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+        
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .badge-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .badge-info {
+            background: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧪 Relatório de Testes</h1>
+            <p>Mare Alta - Sistema de Gestão Náutica</p>
+            <p style="opacity: 0.8; margin-top: 10px;">Backend Python/FastAPI - 07 de Dezembro de 2025</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number info">52</div>
+                <div class="stat-label">Testes Criados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number success">19</div>
+                <div class="stat-label">Testes Passando</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number warning">33</div>
+                <div class="stat-label">Necessitam Ajuste</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number info">52%</div>
+                <div class="stat-label">Cobertura de Código</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📊 Progresso Geral</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 36.5%;">36.5% Passando</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>✅ Módulos Testados</h2>
+                <div class="test-grid">
+                    <!-- Auth Tests -->
+                    <div class="test-module">
+                        <h3>🔐 Autenticação <span class="badge badge-success">100%</span></h3>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Hash de senhas</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Verificação de senha</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Tokens JWT</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Expiração de tokens</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Auth Router -->
+                    <div class="test-module">
+                        <h3>🚪 Auth Router <span class="badge badge-warning">38%</span></h3>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Login success</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Acesso não autorizado</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Token inválido</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Obter usuário atual</div>
+                        </div>
+                    </div>
+                    
+                    <!-- CRUD Operations -->
+                    <div class="test-module">
+                        <h3>💾 Operações CRUD <span class="badge badge-warning">17%</span></h3>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Criar tenant</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Criar usuário</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">CRUD de clientes</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">CRUD de barcos</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">CRUD de peças</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Clients Router -->
+                    <div class="test-module">
+                        <h3>👥 Clientes <span class="badge badge-warning">17%</span></h3>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Listar clientes</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Criar cliente</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Acesso não autorizado</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Boats Router -->
+                    <div class="test-module">
+                        <h3>⛵ Embarcações <span class="badge badge-warning">20%</span></h3>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Listar barcos</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Criar barco</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Acesso não autorizado</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Inventory Router -->
+                    <div class="test-module">
+                        <h3>📦 Inventário <span class="badge badge-warning">13%</span></h3>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Listar peças</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Movimentos de estoque</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Acesso não autorizado</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Orders Router -->
+                    <div class="test-module">
+                        <h3>📋 Ordens de Serviço <span class="badge badge-warning">17%</span></h3>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Listar ordens</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status failed"></div>
+                            <div class="test-name">Criar ordem</div>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-status passed"></div>
+                            <div class="test-name">Acesso não autorizado</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>📈 Cobertura de Código por Módulo</h2>
+                <div class="coverage-section">
+                    <div class="coverage-item">
+                        <span><strong>schemas.py</strong></span>
+                        <div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill" style="width: 100%"></div>
+                            </div>
+                            <span style="margin-left: 10px;">100%</span>
+                        </div>
+                    </div>
+                    <div class="coverage-item">
+                        <span><strong>auth.py</strong></span>
+                        <div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill" style="width: 100%"></div>
+                            </div>
+                            <span style="margin-left: 10px;">100%</span>
+                        </div>
+                    </div>
+                    <div class="coverage-item">
+                        <span><strong>clients_router.py</strong></span>
+                        <div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill" style="width: 86%"></div>
+                            </div>
+                            <span style="margin-left: 10px;">86%</span>
+                        </div>
+                    </div>
+                    <div class="coverage-item">
+                        <span><strong>fiscal_router.py</strong></span>
+                        <div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill" style="width: 79%"></div>
+                            </div>
+                            <span style="margin-left: 10px;">79%</span>
+                        </div>
+                    </div>
+                    <div class="coverage-item">
+                        <span><strong>boats_router.py</strong></span>
+                        <div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill" style="width: 70%"></div>
+                            </div>
+                            <span style="margin-left: 10px;">70%</span>
+                        </div>
+                    </div>
+                    <div class="coverage-item">
+                        <span><strong>inventory_router.py</strong></span>
+                        <div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill" style="width: 57%"></div>
+                            </div>
+                            <span style="margin-left: 10px;">57%</span>
+                        </div>
+                    </div>
+                    <div class="coverage-item">
+                        <span><strong>mercury_router.py</strong></span>
+                        <div>
+                            <div class="coverage-bar">
+                                <div class="coverage-bar-fill" style="width: 15%"></div>
+                            </div>
+                            <span style="margin-left: 10px;">15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎯 Próximos Passos</h2>
+                <div style="background: #f8f9fa; padding: 30px; border-radius: 15px; margin-top: 20px;">
+                    <h3 style="color: #10b981; margin-bottom: 15px;">✅ Prioridade Alta</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">✓ Corrigir campos dos modelos nos testes</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">⏳ Adicionar testes para Mercury router</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">⏳ Adicionar testes para Config router</li>
+                    </ul>
+                    
+                    <h3 style="color: #3b82f6; margin: 20px 0 15px;">📋 Prioridade Média</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">◯ Aumentar cobertura para 80%+</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;">◯ Testes de integração end-to-end</li>
+                        <li style="padding: 10px 0;">◯ Testes de performance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p><strong>Mare Alta - Sistema de Gestão Náutica</strong></p>
+            <p style="margin-top: 10px; opacity: 0.8;">Relatório gerado em 07 de Dezembro de 2025</p>
+            <p style="margin-top: 5px; opacity: 0.6; font-size: 0.9em;">Powered by pytest + FastAPI TestClient</p>
+        </footer>
+    </div>
+</body>
+</html>
