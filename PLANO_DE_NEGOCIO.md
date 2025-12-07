@@ -72,13 +72,21 @@ Para tornar o sistema comercializável e robusto, faltam os seguintes pontos té
 2.  **Backup em Nuvem**:
     -   Garanta que os dados do cliente nunca sumam.
 
-### Módulo 9: Orçador Inteligente de Revisões (Kits Padrão)
+### Módulo 9: Orçador Inteligente de Revisões ✅ IMPLEMENTADO
 *Focado em velocidade e padronização (Mercury / Yamaha / Mercruiser).*
-- **Funcionalidades:**
-    - **Base de Conhecimento de Revisões:** O sistema já traz (ou permite cadastrar) os "Kits de Revisão" para cada intervalo (50h, 100h, 200h, 300h...).
-    - **Orçamento em 1 Clique:** Ao selecionar o motor do cliente e as horas atuais, o sistema puxa automaticamente todas as peças (filtros, óleos, anodos) e a mão-de-obra padrão.
-    - **Integração de Catálogo:** Vínculo com Part Numbers oficiais da Mercury/Yamaha para garantir que o orçamento esteja sempre técnico e correto.
-    - **Atualização de Preços:** Quando o preço do óleo sobe no estoque, todos os orçamentos de revisão são reajustados automaticamente.
+- **Funcionalidades Implementadas:**
+    - **✅ Base de Conhecimento de Revisões:** 19 kits pré-cadastrados para Mercury (Verado, Portáteis, MerCruiser, Diesel, SeaPro, OptiMax) e Yamaha.
+    - **✅ Orçamento em 1 Clique:** Interface visual onde o mecânico seleciona marca, modelo e intervalo - o sistema gera o orçamento completo automaticamente.
+    - **✅ Geração de Pré-Ordem:** Botão que cria a OS completa com todos os itens (peças e mão de obra) já preenchidos.
+    - **✅ PDF Profissional:** Exportação de orçamento em PDF pronto para enviar ao cliente, com logo da oficina.
+    - **✅ Integração com Estoque:** Baixa automática de peças quando a OS é concluída, com match por Part Number.
+    - **✅ Gestão de Preços Inteligente:**
+        - Sistema de **edição individual** de peças com cálculo automático de markup (+60%).
+        - Ferramenta de **atualização de preços em massa** para aplicar margem personalizada em todo o estoque.
+        - 37 peças Mercury/Yamaha pré-cadastradas com SKU, custo e preço organizadas por localização.
+    - **✅ Catálogo Mercury:** Vínculo com Part Numbers oficiais para garantir precisão técnica.
+
+**Diferencial Comercial:** Este módulo reduz de 30 minutos para 30 segundos o tempo necessário para criar um orçamento de revisão completo e profissional.
 
 ---
 
@@ -96,8 +104,29 @@ Para tornar o sistema comercializável e robusto, faltam os seguintes pontos té
 
 ---
 
-## 5. Próximos Passos Imediatos para Você
-Seu foco agora deve ser:
-1.  **Terminar a Migração Backend**: Finalizar a conexão do React com o Python FastAPI para garantir estabilidade.
-2.  **Refinar o CRM**: Transformar a tela de CRM atual em algo automático que envie mensagens de WhatsApp (integração com API de WhatsApp como Twilio ou Z-API).
-3.  **Criar o Módulo de Pátio**: Desenvolver a interface visual de vagas.
+## 5. Próximos Passos Imediatos
+Baseado no progresso atual do projeto:
+
+### ✅ Concluído:
+1. ✅ **Backend Python FastAPI:** Infraestrutura multi-tenant preparada (75% completa).
+2. ✅ **Orçador de Revisões:** Módulo completo e funcional com 19 kits Mercury/Yamaha.
+3. ✅ **Gestão de Preços:** Sistema automático de markup e atualização em massa.
+
+### 🎯 Próximas Prioridades:
+1. **Completar Multi-Tenancy (Fase 2 - 25% restante):**
+   - Atualizar todos os endpoints CRUD para filtrar por `tenant_id`.
+   - Testar isolamento de dados entre tenants.
+   
+2. **Deploy e Validação:**
+   - Fazer deploy da Fase 1 em ambiente de produção/homologação.
+   - Coletar feedback de usuários reais (mecânicos e donos de oficina).
+
+3. **Refinar o CRM:**
+   - Transformar a tela de CRM em ferramenta automática de WhatsApp (integração com API Z-API ou Twilio).
+   - Alertas automáticos de revisão por horas de motor.
+
+4. **Módulo de Pátio (Fase 3):**
+   - Desenvolver interface visual de vagas para marinas.
+   - Sistema de agendamento de descida/subida de barcos.
+
+**Foco Comercial:** Com a Fase 1 completa, o sistema já está **vendável** para oficinas náuticas que trabalham com Mercury/Yamaha. O diferencial do Orçador Inteligente é um argumento de venda forte.

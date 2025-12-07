@@ -516,6 +516,19 @@ export const StorageService = {
     return users.find(u => u.email === email && u.password === pass) || null;
   },
 
+  // Initialize all storage with seed data if empty
+  initialize: () => {
+    StorageService.getUsers();
+    StorageService.getClients();
+    StorageService.getMarinas();
+    StorageService.getBoats();
+    StorageService.getInventory();
+    StorageService.getOrders();
+    StorageService.getTransactions();
+    StorageService.getConfig();
+    StorageService.getServices();
+  },
+
   reset: () => {
     localStorage.clear();
     window.location.reload();

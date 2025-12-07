@@ -338,10 +338,10 @@ export const InventoryView: React.FC = () => {
         setIsEditModalOpen(true);
     };
 
-    const handleSaveEditedPart = () => {
+    const handleSaveEditedPart = async () => {
         if (!editingPart) return;
 
-        // Auto-apply markup if cost and price are equal
+        // Auto-apply markup if cost and price are equal (came from Mercury with same values)
         let updatedPart = { ...editingPart };
         if (updatedPart.cost === updatedPart.price && updatedPart.cost > 0) {
             updatedPart.price = updatedPart.cost * 1.60; // 60% markup
@@ -355,21 +355,63 @@ export const InventoryView: React.FC = () => {
         alert("Peça atualizada com sucesso!");
     };
 
-    // --- BULK PRICE UPDATE ---
-    const handleBulkPriceUpdate = () => {
-        if (!window.confirm(`Aplicar ${bulkMarkup}% de margem sobre o custo em TODAS as peças do estoque?`)) {
+    // --- UPDATE PRICES FROM MERCURY API ---
+    const handleUpdatePricesFromMercury = async () => {
+        if (!window.confirm(`Atualizar preços de TODAS as peças consultando a API Mercury?\n\nIsso pode levar alguns minutos...`)) {
             return;
         }
 
-        const updatedParts = parts.map(p => ({
-            ...p,
-            price: p.cost * (1 + bulkMarkup / 100)
-        }));
+        setIsBulkPriceModalOpen(false);
+        const updatedParts = [...parts];
+        let successCount = 0;
+        let errorCount = 0;
+
+        // Show progress
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+
+            try {
+                // Search Mercury API by SKU
+                const response = await ApiService.searchMercuryProduct(part.sku);
+
+                if (response.status === 'success' && response.results.length > 0) {
+                    const mercuryData = response.results[0];
+
+                    // Parse currency values
+                    const valorCusto = parseCurrency(mercuryData.valorCusto);
+                    const valorTabela = parseCurrency(mercuryData.valorTabela);
+                    let valorVenda = parseCurrency(mercuryData.valorVenda);
+
+                    // Apply 60% markup if valorCusto === valorTabela
+                    if (valorCusto === valorTabela && valorCusto > 0) {
+                        valorVenda = valorCusto * 1.60;
+                    }
+
+                    // Update part
+                    updatedParts[i] = {
+                        ...part,
+                        cost: valorCusto,
+                        price: valorVenda
+                    };
+
+                    successCount++;
+                    console.log(`✅ ${part.sku}: Custo=${valorCusto} Venda=${valorVenda}`);
+                } else {
+                    errorCount++;
+                    console.log(`⚠️ ${part.sku}: Não encontrado na API Mercury`);
+                }
+            } catch (error) {
+                errorCount++;
+                console.error(`❌ ${part.sku}:`, error);
+            }
+
+            // Small delay to avoid overwhelming the API
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
 
         setParts(updatedParts);
         StorageService.saveInventory(updatedParts);
-        setIsBulkPriceModalOpen(false);
-        alert(`Preços atualizados! ${bulkMarkup}% de margem aplicada em ${parts.length} itens.`);
+        alert(`Atualização concluída!\n\n✅ ${successCount} peças atualizadas\n⚠️ ${errorCount} não encontradas ou com erro`);
     };
 
     // --- SEARCH HELPERS ---
@@ -1066,29 +1108,22 @@ export const InventoryView: React.FC = () => {
             {isBulkPriceModalOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-                        <h3 className="text-lg font-bold mb-4 text-green-700">💰 Atualizar Preços em Massa</h3>
+                        <h3 className="text-lg font-bold mb-4 text-green-700">🔄 Sincronizar Preços com Mercury</h3>
                         <p className="text-sm text-slate-600 mb-4">
-                            Aplique uma margem de lucro sobre o custo de todas as peças do estoque de uma vez.
+                            Consulta a <strong>API Mercury Marine</strong> para atualizar custo e preço de venda de todas as peças do estoque.
                         </p>
 
-                        <div className="mb-4">
-                            <label className="block text-xs font-medium text-slate-700 mb-2">
-                                Margem de Lucro (%)
-                            </label>
-                            <input
-                                type="number"
-                                step="1"
-                                className="w-full p-3 border rounded bg-white text-slate-900 text-lg font-bold"
-                                value={bulkMarkup}
-                                onChange={e => setBulkMarkup(parseFloat(e.target.value) || 0)}
-                            />
-                            <p className="text-xs text-slate-500 mt-1">
-                                Exemplo: 60% significa que uma peça de custo R$ 100 será vendida por R$ 160
-                            </p>
+                        <div className="bg-blue-50 border border-blue-200 p-4 rounded text-sm text-blue-900 mb-4">
+                            <strong>📋 Como funciona:</strong>
+                            <ul className="list-disc ml-5 mt-2 space-y-1">
+                                <li>Busca cada peça pelo SKU na API Mercury</li>
+                                <li>Atualiza <strong>Custo</strong> e <strong>Preço</strong></li>
+                                <li>Se <strong>Custo = Tabela</strong>, aplica <strong>+60% automaticamente</strong></li>
+                            </ul>
                         </div>
 
                         <div className="bg-amber-50 border border-amber-200 p-3 rounded text-sm text-amber-900 mb-4">
-                            <strong>⚠️ Atenção:</strong> Esta ação irá modificar o preço de venda de <strong>{parts.length} peças</strong>.
+                            <strong>⚠️ Atenção:</strong> Esta ação irá consultar e atualizar <strong>{parts.length} peças</strong>. Pode levar alguns minutos.
                         </div>
 
                         <div className="flex gap-3">
@@ -1099,10 +1134,10 @@ export const InventoryView: React.FC = () => {
                                 Cancelar
                             </button>
                             <button
-                                onClick={handleBulkPriceUpdate}
+                                onClick={handleUpdatePricesFromMercury}
                                 className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold"
                             >
-                                Aplicar Margem
+                                Sincronizar Agora
                             </button>
                         </div>
                     </div>

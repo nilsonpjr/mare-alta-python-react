@@ -24,6 +24,9 @@ export const BoatsView: React.FC = () => {
     const [selectedEngineBrand, setSelectedEngineBrand] = useState('');
     const [selectedEngineModel, setSelectedEngineModel] = useState('');
 
+    // Mercury Lookup State
+    const [loadingMercury, setLoadingMercury] = useState(false);
+
     useEffect(() => {
         setBoats(StorageService.getBoats());
         setClients(StorageService.getClients());
@@ -146,9 +149,6 @@ export const BoatsView: React.FC = () => {
     );
 
     if (!config) return <div>Carregando...</div>;
-
-    // Mercury Lookup State
-    const [loadingMercury, setLoadingMercury] = useState(false);
 
     const lookupEngineInfo = async () => {
         if (!tempEngine.serialNumber) {

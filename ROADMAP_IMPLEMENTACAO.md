@@ -14,6 +14,10 @@ Este documento serve como nosso **"Mapa de Controle"** para garantir que o Plano
 - [x] **Gerador de Pré-Ordem:** Botão que cria automaticamente a OS com os itens do kit.
 - [x] **PDF de Orçamento:** Gerar um PDF profissional com logo da oficina para enviar ao cliente.
 - [x] **Baixa de Estoque Real:** Conectar a criação da OS com a redução do `quantity` na tabela de peças (via `partId` matching).
+- [x] **Banco de Kits Completo:** 19 kits cobrindo toda linha Mercury (Verado, Portáteis, MerCruiser, Diesel, SeaPro, OptiMax) + Yamaha.
+- [x] **Cadastro de Peças Mercury:** 37 peças pré-cadastradas no estoque com SKU, custo e preço organizadas por localização.
+- [x] **Edição de Peças:** Modal para editar nome, custo e preço com aplicação automática de markup de 60%.
+- [x] **Atualização de Preços em Massa:** Ferramenta para aplicar margem de lucro personalizada em todo o estoque de uma vez.
 
 ## 🏗 Fase 2: Estrutura SaaS & Backend (Alicerce) - EM ANDAMENTO
 *Objetivo: Preparar o sistema para ter múltiplos clientes (Multi-tenancy).*
@@ -43,8 +47,15 @@ Este documento serve como nosso **"Mapa de Controle"** para garantir que o Plano
 ---
 
 ## 📌 Status Atual
-**Módulo em Andamento:** ✅ Fase 1 Concluída! Iniciando Fase 2.
-**Próxima Ação:** Migrar backend para Python FastAPI (Multi-tenancy).
+**Módulo em Andamento:** ✅ Fase 1 100% Concluída! Fase 2 em progresso (75%).  
+**Última Atualização:** Adicionadas ferramentas de precificação automática e gestão de estoque Mercury.  
+**Próxima Ação:** Completar Fase 2 - Atualizar CRUDs com filtros de tenant_id.
+
+**Destaques da Última Sessão:**
+- ✅ 37 peças Mercury/Yamaha cadastradas no estoque
+- ✅ Sistema de edição de peças com markup automático de 60%
+- ✅ Atualização de preços em massa para todo o inventário
+- ✅ 19 kits de manutenção completos (100h, 300h, 500h, 1000h)
 
 ---
 

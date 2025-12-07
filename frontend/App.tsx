@@ -16,11 +16,17 @@ import { UsersView } from './components/UsersView';
 import { MaintenanceBudgetView } from './components/MaintenanceBudgetView';
 import { UserRole, User } from './types';
 import { Menu, Anchor } from 'lucide-react';
+import { StorageService } from './services/storage';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Initialize storage with seed data on first load
+  useEffect(() => {
+    StorageService.initialize();
+  }, []);
 
   const handleLogin = (user: User) => {
     setCurrentUser(user);
