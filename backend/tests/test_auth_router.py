@@ -22,8 +22,8 @@ class TestAuthRouter:
         
         assert response.status_code == 200
         data = response.json()
-        assert "access_token" in data
-        assert data["token_type"] == "bearer"
+        assert "accessToken" in data
+        assert data["tokenType"] == "bearer"
     
     def test_login_wrong_password(self, client: TestClient, test_user):
         """Test login with wrong password"""

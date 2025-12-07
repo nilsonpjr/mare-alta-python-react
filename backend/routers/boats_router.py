@@ -41,6 +41,21 @@ def create_new_boat(
     # Chama a função CRUD para criar a embarcação no banco de dados.
     return crud.create_boat(db, boat, tenant_id=current_user.tenant_id)
 
+@router.get("/{boat_id}", response_model=schemas.Boat)
+def get_single_boat(
+    boat_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(auth.get_current_active_user)
+):
+    """
+    Retorna uma embarcação específica pelo ID.
+    Requer autenticação.
+    """
+    boat = crud.get_boat(db, boat_id=boat_id)
+    if not boat:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Embarcação não encontrada")
+    return boat
+
 @router.put("/{boat_id}", response_model=schemas.Boat)
 def update_existing_boat(
     boat_id: int, # ID da embarcação a ser atualizada, passado como parâmetro de caminho.

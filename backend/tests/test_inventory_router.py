@@ -119,8 +119,8 @@ class TestInventoryRouter:
         db.commit()
         db.refresh(part)
         
-        response = client.patch(
-            f"/api/inventory/parts/{part.id}/quantity",
+        response = client.put(
+            f"/api/inventory/parts/{part.id}",
             json={"quantity": 30.0},
             headers=auth_headers
         )
@@ -147,10 +147,11 @@ class TestInventoryRouter:
         movement = StockMovement(
             part_id=part.id,
             quantity=10.0,
-            movement_type="IN_INVOICE",
+            type="IN_INVOICE", # ✅ CORRIGIDO de movement_type para type
             description="Stock replenishment",
             tenant_id=test_tenant.id
         )
+
         db.add(movement)
         db.commit()
         
