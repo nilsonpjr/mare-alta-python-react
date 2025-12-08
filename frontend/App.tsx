@@ -21,6 +21,7 @@ import { StorageService } from './services/storage';
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState('dashboard');
+  const [viewData, setViewData] = useState<any>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Initialize storage with seed data on first load
@@ -44,8 +45,9 @@ function App() {
     setCurrentView('dashboard');
   };
 
-  const handleSetView = (view: string) => {
+  const handleSetView = (view: string, data?: any) => {
     setCurrentView(view);
+    setViewData(data);
     setIsMobileMenuOpen(false); // Close mobile menu on navigation
   };
 
@@ -56,7 +58,7 @@ function App() {
       case 'dashboard':
         return <Dashboard setView={handleSetView} />;
       case 'schedule':
-        return <ScheduleView />;
+        return <ScheduleView onNavigate={handleSetView} />;
       case 'clients':
         return <ClientsView />;
       case 'boats':
@@ -64,7 +66,7 @@ function App() {
       case 'marinas':
         return <MarinasView />;
       case 'orders':
-        return <OrdersView role={UserRole.ADMIN} />;
+        return <OrdersView role={UserRole.ADMIN} initialOrderId={viewData?.orderId} />;
       case 'inventory':
         return <InventoryView />;
       case 'crm':
@@ -78,7 +80,7 @@ function App() {
 
       // Technician Views
       case 'tech-orders':
-        return <OrdersView role={UserRole.TECHNICIAN} />;
+        return <OrdersView role={UserRole.TECHNICIAN} initialOrderId={viewData?.orderId} />;
 
       // Client Views
       case 'client-portal':

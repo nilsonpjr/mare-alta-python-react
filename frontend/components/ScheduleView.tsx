@@ -212,7 +212,13 @@ const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ service, onCl
                     <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition">
                         Fechar
                     </button>
-                    {/* Botão Editar desabilitado por enquanto no Modal, focar na funcionalidade de arrastar */}
+                    <button
+                        onClick={() => { onClose(); onEdit(service); }}
+                        className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition shadow-sm"
+                    >
+                        <Edit2 className="w-4 h-4 mr-2" />
+                        Ver Detalhes na OS
+                    </button>
                 </div>
             </div>
         </div>
@@ -221,7 +227,11 @@ const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({ service, onCl
 
 // --- SCHEDULE VIEW (AGENDA) ---
 
-export function ScheduleView() {
+interface ScheduleViewProps {
+    onNavigate?: (view: string, data?: any) => void;
+}
+
+export function ScheduleView({ onNavigate }: ScheduleViewProps) {
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState<ServiceOrder[]>([]);
     const [boats, setBoats] = useState<Boat[]>([]);
@@ -254,8 +264,7 @@ export function ScheduleView() {
             setOrders(ordersData);
             setBoats(boatsData);
 
-            // Mock Technicians (Simulação se não tiver rota de users)
-            // TODO: Buscar do Backend ApiService.getUsers() filter by Technician
+            // Mock Technicians
             const mockTechs: Technician[] = [
                 { id: '1', name: 'Carlos (Líder)', color: '#ef4444', initials: 'CA' },
                 { id: '2', name: 'João (Mecânico)', color: '#3b82f6', initials: 'JO' },
@@ -268,24 +277,22 @@ export function ScheduleView() {
                 const boat = boatsData.find(b => b.id === order.boatId);
                 const boatName = boat ? boat.name : `Barco #${order.boatId}`;
 
-                // Tentar extrair data se existir
                 let scheduledDate = order.scheduledAt ? order.scheduledAt.split('T')[0] : undefined;
 
                 return {
                     id: order.id.toString(),
                     serviceName: `${boatName} - ${order.description.substring(0, 30)}...`,
-                    type: ServiceType.MECHANICS, // Default
+                    type: ServiceType.MECHANICS,
                     timeEstimate: numberToEstimate(order.estimatedDuration || 1),
-                    location: 'Marina Verolme', // Hardcoded or fetch from boat->marina
-                    execution: ExecutionMode.BOTH, // Default
-                    priority: Priority.MEDIUM, // Default
+                    location: 'Marina Verolme',
+                    execution: ExecutionMode.BOTH,
+                    priority: Priority.MEDIUM,
                     status: mapOSStatusToAgendaStatus(order.status),
                     observations: order.diagnosis || order.description,
                     scheduledDate: scheduledDate,
-                    scheduledPeriod: Period.MORNING, // Default
-                    defaultTechnicianId: '1', // Default assigned to Carlos
+                    scheduledPeriod: Period.MORNING,
+                    defaultTechnicianId: '1',
                     createdAt: new Date(order.createdAt).getTime(),
-                    customAllocations: {} // Not supported in backend yet
                 } as Service;
             });
             setServices(mappedServices);
@@ -298,7 +305,6 @@ export function ScheduleView() {
     };
 
     const toISODate = (d: Date) => d.toISOString().split('T')[0];
-
     const addDays = (d: Date, days: number) => {
         const result = new Date(d);
         result.setDate(result.getDate() + days);
@@ -318,21 +324,16 @@ export function ScheduleView() {
     }, [startDate, visibleDays]);
 
     const printWeekDays = useMemo(() => weekDays.slice(0, 6), [weekDays]);
-
     const periods = [Period.MORNING, Period.AFTERNOON, Period.NIGHT];
 
     const getDurationSlots = (estimate: TimeEstimate): number => {
-        // Simplified logic
         if (estimate === TimeEstimate.ONE_DAY) return 2;
         if (estimate === TimeEstimate.TWO_DAYS) return 4;
         return 1;
     };
 
     const getServiceAllocations = (service: Service) => {
-        // Simplified allocation logic (just based on scheduledDate + duration)
         if (!service.scheduledDate) return [];
-
-        // Assume sequential matching for now
         return [{
             index: 0,
             date: service.scheduledDate,
@@ -362,7 +363,6 @@ export function ScheduleView() {
             const service = services.find(s => s.id === serviceId);
 
             if (service) {
-                // Update Local State Optimistically
                 const updatedServices = services.map(s => {
                     if (s.id === serviceId) {
                         return { ...s, scheduledDate: targetDate, scheduledPeriod: targetPeriod || Period.MORNING };
@@ -371,8 +371,6 @@ export function ScheduleView() {
                 });
                 setServices(updatedServices);
 
-                // Update Backend
-                // Need numeric ID
                 const orderIdInt = parseInt(serviceId);
                 if (!isNaN(orderIdInt)) {
                     await ApiService.updateOrder(orderIdInt, {
@@ -435,7 +433,11 @@ export function ScheduleView() {
                 <ServiceDetailsModal
                     service={selectedService}
                     onClose={() => setSelectedService(null)}
-                    onEdit={() => { }}
+                    onEdit={(s) => {
+                        if (onNavigate) {
+                            onNavigate('orders', { orderId: s.id });
+                        }
+                    }}
                     techs={techs}
                 />
             )}

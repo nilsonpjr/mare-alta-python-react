@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ServiceOrder, OSStatus, Boat, Part, ServiceItem, UserRole, Client, Marina, ChecklistItem, AttachmentType, ServiceDefinition, ItemType } from '../types';
 import { StorageService } from '../services/storage';
+import { ApiService } from '../services/api';
 import { GeminiService } from '../services/geminiService';
 import {
     Plus, FileText, CheckCircle, Clock,
@@ -23,6 +24,7 @@ import {
 
 interface OrdersViewProps {
     role: UserRole;
+    initialOrderId?: string | number;
 }
 
 const CHECKLIST_TEMPLATES = {
@@ -48,7 +50,7 @@ const CHECKLIST_TEMPLATES = {
     ]
 };
 
-export const OrdersView: React.FC<OrdersViewProps> = ({ role }) => {
+export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) => {
     const [orders, setOrders] = useState<ServiceOrder[]>([]);
     const [boats, setBoats] = useState<Boat[]>([]);
     const [clients, setClients] = useState<Client[]>([]);
@@ -93,13 +95,36 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role }) => {
         refreshData();
     }, []);
 
-    const refreshData = () => {
-        setOrders(StorageService.getOrders());
-        setBoats(StorageService.getBoats());
-        setParts(StorageService.getInventory());
-        setServicesCatalog(StorageService.getServices());
-        setClients(StorageService.getClients());
-        setMarinas(StorageService.getMarinas());
+    useEffect(() => {
+        if (initialOrderId && orders.length > 0 && !selectedOrder) {
+            const target = orders.find(o => o.id.toString() === initialOrderId.toString());
+            if (target) {
+                setSelectedOrder(target);
+                setActiveTab('details');
+            }
+        }
+    }, [initialOrderId, orders]);
+
+    const refreshData = async () => {
+        try {
+            const [ordersData, boatsData, clientsData, partsData] = await Promise.all([
+                ApiService.getOrders(),
+                ApiService.getBoats(),
+                ApiService.getClients(),
+                ApiService.getParts().catch(() => [])
+            ]);
+
+            setOrders(ordersData);
+            setBoats(boatsData);
+            setClients(clientsData);
+            setParts(partsData);
+
+            // Still from Storage for now (Catalogs)
+            setServicesCatalog(StorageService.getServices());
+            setMarinas(StorageService.getMarinas());
+        } catch (error) {
+            console.error("Error fetching data", error);
+        }
     };
 
     const isTechnician = role === UserRole.TECHNICIAN;
