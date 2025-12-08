@@ -91,6 +91,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) 
     const [editQty, setEditQty] = useState(0);
     const [editPrice, setEditPrice] = useState(0);
 
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
     useEffect(() => {
         refreshData();
     }, []);
@@ -106,6 +109,8 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) 
     }, [initialOrderId, orders]);
 
     const refreshData = async () => {
+        setIsLoading(true);
+        setError(null);
         try {
             const [ordersData, boatsData, clientsData, partsData] = await Promise.all([
                 ApiService.getOrders(),
@@ -122,8 +127,11 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) 
             // Still from Storage for now (Catalogs)
             setServicesCatalog(StorageService.getServices());
             setMarinas(StorageService.getMarinas());
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error fetching data", error);
+            setError("Erro ao carregar ordens: " + (error.response?.data?.detail || error.message));
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -474,10 +482,10 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) 
     };
 
     const filteredOrders = orders.filter(order => {
-        const boat = boats.find(b => b.id === order.boatId);
-        const client = clients.find(c => c.id === boat?.clientId);
+        const boat = boats.find(b => b.id.toString() === order.boatId.toString());
+        const client = clients.find(c => c.id.toString() === boat?.clientId.toString());
         const matchesText =
-            order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            order.id.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
             boat?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             client?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             order.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -486,9 +494,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) 
     });
 
     const getOrderContext = (order: ServiceOrder) => {
-        const boat = boats.find(b => b.id === order.boatId);
-        const client = clients.find(c => c.id === boat?.clientId);
-        const marina = marinas.find(m => m.id === boat?.marinaId);
+        const boat = boats.find(b => b.id.toString() === order.boatId.toString());
+        const client = clients.find(c => c.id.toString() === boat?.clientId.toString());
+        const marina = marinas.find(m => m.id.toString() === boat?.marinaId?.toString());
         return { boat, client, marina };
     };
 
@@ -669,6 +677,24 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) 
 
     return (
         <div className="flex h-screen bg-slate-50 relative">
+            {isLoading && (
+                <div className="absolute inset-0 bg-white/80 z-[100] flex items-center justify-center flex-col">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                    <p className="text-slate-600">Carregando ordens...</p>
+                </div>
+            )}
+
+            {error && (
+                <div className="absolute inset-0 bg-white z-[100] flex items-center justify-center flex-col p-6">
+                    <AlertTriangle className="w-16 h-16 text-amber-500 mb-4" />
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">Ops! Algo deu errado.</h3>
+                    <p className="text-slate-600 mb-6 text-center max-w-md">{error}</p>
+                    <button onClick={refreshData} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Tentar Novamente
+                    </button>
+                </div>
+            )}
+
             <input
                 type="file"
                 ref={fileInputRef}
@@ -782,8 +808,13 @@ export const OrdersView: React.FC<OrdersViewProps> = ({ role, initialOrderId }) 
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-24 lg:pb-4">
+                        {filteredOrders.length === 0 && !isLoading && (
+                            <div className="text-center py-10 text-slate-500">
+                                Nenhum serviço encontrado.
+                            </div>
+                        )}
                         {filteredOrders.map(order => {
-                            const boat = boats.find(b => b.id === order.boatId);
+                            const boat = boats.find(b => b.id.toString() === order.boatId.toString());
                             return (
                                 <div
                                     key={order.id}
